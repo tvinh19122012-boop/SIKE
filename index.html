@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#05070a; --txt:#f4f7f5; --txt-2:#a9b3bd; --txt-3:#68737d;
+  --gold:#ffd60a; --gold-2:#f5b301; --mint:#7df9d6; --green:#22c55e;
+  --red:#ff4d4d; --bd:rgba(255,255,255,.09); --bd-hi:rgba(255,255,255,.2);
+  --glass:rgba(255,255,255,.04); --glass-2:rgba(255,255,255,.07);
+  --r:20px; --ease:cubic-bezier(.32,.72,0,1);
+  --tg:#29b6f6;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg); color:var(--txt); min-height:100vh; line-height:1.6;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(125,249,214,.06), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 85% 100%, rgba(255,214,10,.05), transparent 60%);
+  background-attachment:fixed;
+}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+body, .post-card, .post-desc, .modal-content, .guide-line, .post-title, .modal-title, .note-content {
+  -webkit-user-select:text !important; user-select:text !important;
+}
+button, .gbtn, .btn-download, .modal-download-btn, .modal-close, .copy-btn,
+.btn-youtube, .btn-confirm, .btn-skip, .copy-note-btn {
+  -webkit-user-select:none !important; user-select:none !important;
+}
+
+.glass{
+  position:relative;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--bd); border-radius:var(--r);
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 -1px 0 rgba(0,0,0,.25) inset, 0 8px 28px rgba(0,0,0,.35);
+}
+
+/* ===== HEADER ===== */
+.header{
+  position:sticky;top:0;z-index:100; padding:12px 22px; display:flex;justify-content:space-between;
+  align-items:center;gap:12px;flex-wrap:wrap; background:rgba(10,14,21,.7);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--bd);
+}
+.header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:900;letter-spacing:-.6px;color:var(--txt);display:flex;align-items:center;gap:8px}
+.logo i{color:var(--mint)}
+.logo span{background:linear-gradient(135deg,var(--gold),var(--mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-right{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+
+.gbtn{
+  position:relative; padding:9px 18px;border-radius:14px; font-weight:700;font-size:13px;
+  border:1px solid var(--bd); cursor:pointer; display:inline-flex;align-items:center;gap:7px;
+  color:var(--txt); background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  box-shadow:0 1px 0 rgba(255,255,255,.14) inset, 0 -1px 0 rgba(0,0,0,.2) inset, 0 3px 12px rgba(0,0,0,.25);
+  transition:transform .2s var(--ease), border-color .2s, box-shadow .2s, background .2s; will-change:transform;
+}
+.gbtn:hover{
+  transform:translateY(-2px); border-color:var(--bd-hi);
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset, 0 -1px 0 rgba(0,0,0,.2) inset, 0 6px 20px rgba(0,0,0,.35);
+}
+.gbtn:active{transform:translateY(0) scale(.97)}
+.btn-social.youtube i{color:var(--red)}
+.btn-social.telegram i{color:var(--mint)}
+.btn-social.tiktok i{color:#fff}
+.btn-social.zalo i{color:#4fc3f7}
+.btn-bypass i{color:var(--green)}
+.btn-social.youtube:hover{border-color:rgba(255,77,77,.5)}
+.btn-social.telegram:hover{border-color:rgba(125,249,214,.5)}
+.btn-social.tiktok:hover{border-color:rgba(255,255,255,.5)}
+.btn-social.zalo:hover{border-color:rgba(79,195,247,.5)}
+.btn-bypass:hover{border-color:rgba(34,197,94,.5)}
+
+/* ===== MAIN ===== */
+.container{max-width:980px;margin:0 auto;padding:24px 20px 70px}
+.guide-line{
+  text-align:center;color:var(--txt-2);margin-bottom:22px;font-size:14px;
+  padding:13px 22px;border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid var(--bd); box-shadow:0 1px 0 rgba(255,255,255,.1) inset;
+}
+.guide-line strong{
+  color:var(--gold);padding:3px 10px;border-radius:8px;
+  background:rgba(255,214,10,.1); border:1px solid rgba(255,214,10,.25);
+}
+.posts-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.post-card{
+  padding:24px 26px; transition:transform .25s var(--ease), border-color .25s, box-shadow .25s;
+  will-change:transform;
+}
+.post-card:hover{
+  transform:translateY(-4px); border-color:var(--bd-hi);
+  box-shadow:0 1px 0 rgba(255,255,255,.16) inset, 0 -1px 0 rgba(0,0,0,.25) inset, 0 14px 36px rgba(0,0,0,.45);
+}
+.post-card .post-title{
+  font-size:18px;font-weight:800;letter-spacing:-.3px; color:var(--txt);margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.post-card .post-title .post-id{
+  font-size:11px;font-weight:700; color:var(--gold); background:rgba(255,214,10,.1);
+  padding:3px 10px;border-radius:12px; border:1px solid rgba(255,214,10,.25);
+}
+.post-card .post-image{
+  width:100%;max-height:320px;object-fit:cover; border-radius:14px;margin:14px 0; border:1px solid var(--bd);
+}
+.post-card .post-desc{display:none}
+.post-card .post-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+
+.btn-download{
+  padding:11px 24px;border-radius:14px; font-weight:800;font-size:13.5px;
+  border:1px solid rgba(125,249,214,.45); background:linear-gradient(180deg,#7df9d6,#22c55e);
+  color:#052e12;cursor:pointer; display:inline-flex;align-items:center;gap:9px;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 -2px 0 rgba(0,0,0,.12) inset, 0 4px 16px rgba(125,249,214,.25);
+  transition:transform .2s var(--ease), box-shadow .2s, filter .2s; will-change:transform;
+}
+.btn-download:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.btn-download:active{transform:translateY(0) scale(.97)}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--txt-3)}
+.empty-state i{font-size:48px;margin-bottom:16px;display:block;color:rgba(125,249,214,.3)}
+.empty-state h3{font-size:17px;color:var(--txt-2);margin-bottom:6px;font-weight:700}
+.loading-spinner{display:flex;justify-content:center;align-items:center;padding:50px 0;gap:12px;color:var(--mint);font-weight:700}
+.loading-spinner i{font-size:24px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== MODAL XEM LINK ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8); z-index:9999;display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.active{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  position:relative; background:linear-gradient(180deg,rgba(28,34,42,.98),rgba(18,22,28,.98));
+  border:1px solid var(--bd-hi); border-radius:24px; padding:30px;max-width:720px;width:100%;max-height:85vh;overflow-y:auto;
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 -1px 0 rgba(0,0,0,.3) inset, 0 30px 80px rgba(0,0,0,.75);
+  animation:popIn .3s var(--ease);
+}
+@keyframes popIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-close{
+  position:absolute;top:14px;right:16px; width:38px;height:38px;border-radius:12px;
+  background:var(--glass);border:1px solid var(--bd); color:var(--txt-2);font-size:17px;cursor:pointer;
+  transition:all .25s var(--ease); display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{color:var(--mint);border-color:rgba(125,249,214,.5);transform:rotate(90deg)}
+.modal-title{
+  font-size:20px;font-weight:800;letter-spacing:-.3px; color:var(--txt);margin-bottom:18px;padding-right:50px;
+  padding-bottom:14px;border-bottom:1px solid var(--bd);
+}
+.modal-content{color:var(--txt-2);font-size:14.5px;line-height:1.85;white-space:pre-wrap;word-break:break-word}
+.modal-content a{
+  color:var(--mint);text-decoration:none;font-weight:700;
+  border-bottom:1px dashed rgba(125,249,214,.4); word-break:break-all;
+}
+.modal-content a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.modal-actions{
+  margin-top:24px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+  border-top:1px solid var(--bd);padding-top:20px;
+}
+.modal-download-btn{
+  padding:14px 40px;border-radius:16px; font-weight:900;font-size:15px;
+  border:1px solid rgba(125,249,214,.45); background:linear-gradient(180deg,#7df9d6,#22c55e);
+  color:#052e12;cursor:pointer; display:inline-flex;align-items:center;gap:9px;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 -2px 0 rgba(0,0,0,.12) inset, 0 6px 20px rgba(125,249,214,.3);
+  transition:all .25s var(--ease);
+}
+.modal-download-btn:hover{transform:translateY(-3px);filter:brightness(1.06)}
+.copy-btn{
+  padding:12px 26px;border-radius:14px; font-weight:700;font-size:13.5px;
+  border:1px solid var(--bd); background:var(--glass); color:var(--txt);cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px; transition:all .2s var(--ease);
+}
+.copy-btn:hover{background:var(--glass-2);border-color:var(--mint);color:var(--mint);transform:translateY(-2px)}
+.copy-btn.copied{background:rgba(125,249,214,.15);border-color:var(--mint);color:var(--mint)}
+
+/* ===== CỔNG CHẶN ===== */
+.sub-gate{
+  position:fixed;inset:0;z-index:99999; background:rgba(3,5,8,.96);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;
+}
+.sub-gate.active{display:flex;animation:fadeIn .3s ease}
+.sub-gate-box{
+  max-width:560px;width:100%; background:linear-gradient(180deg,rgba(28,34,42,.98),rgba(18,22,28,.98));
+  border:1px solid var(--bd-hi); border-radius:26px; padding:34px 30px; text-align:center;
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 -1px 0 rgba(0,0,0,.3) inset, 0 30px 80px rgba(0,0,0,.75);
+  animation:popIn .35s var(--ease); margin:auto;
+}
+.sub-gate-icon{
+  width:76px;height:76px;border-radius:50%; margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 40%,rgba(125,249,214,.3),rgba(125,249,214,.04));
+  border:1px solid rgba(125,249,214,.4); box-shadow:0 0 40px rgba(125,249,214,.2);
+}
+.sub-gate-icon i{font-size:36px;color:var(--mint)}
+.sub-gate-icon.tg{background:radial-gradient(circle at 50% 40%,rgba(41,182,246,.3),rgba(41,182,246,.04));border-color:rgba(41,182,246,.4);box-shadow:0 0 40px rgba(41,182,246,.2)}
+.sub-gate-icon.tg i{color:var(--tg)}
+.sub-gate h2{font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:8px;color:var(--txt)}
+.sub-gate-sub{color:var(--txt-2);font-size:14px;line-height:1.65;margin-bottom:20px}
+.sub-gate-sub b{color:var(--gold)}
+
+.step-bar{display:flex;justify-content:center;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.step-dot{
+  display:flex;align-items:center;gap:7px; padding:7px 14px;border-radius:20px;
+  font-size:12px;font-weight:800;letter-spacing:.3px; border:1px solid var(--bd);
+  background:var(--glass);color:var(--txt-3); transition:all .25s var(--ease);
+}
+.step-dot.active{color:var(--gold); border-color:rgba(255,214,10,.45); background:rgba(255,214,10,.1)}
+.step-dot.done{color:var(--mint); border-color:rgba(125,249,214,.45); background:rgba(125,249,214,.1)}
+.step-dot.opt{border-style:dashed}
+.step-dot.active.tg{color:var(--tg);border-color:rgba(41,182,246,.5);background:rgba(41,182,246,.1)}
+.gate-step{display:none}
+.gate-step.active{display:block;animation:fadeIn .3s ease}
+
+.big-word{
+  display:inline-block;font-weight:900;font-size:clamp(18px,5vw,24px);
+  line-height:1.2;padding:2px 12px;margin:2px 3px;border-radius:12px;vertical-align:middle;
+}
+.big-word.red{color:#fff;background:linear-gradient(180deg,#ff4d4d,#cc0000)}
+.big-word.mint{color:#052e12;background:linear-gradient(180deg,#7df9d6,#22c55e)}
+
+.video-card{
+  display:flex;align-items:center;gap:14px; padding:12px;border-radius:16px;
+  background:rgba(0,0,0,.35); border:1px solid var(--bd); margin-bottom:20px;text-align:left;
+}
+.video-thumb{
+  width:120px;height:68px;border-radius:10px;flex-shrink:0;overflow:hidden;position:relative;
+  background:#000;border:1px solid var(--bd);
+}
+.video-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.video-thumb .play-ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+.video-thumb .play-ic i{font-size:22px;color:#ff4d4d;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.video-info{min-width:0;flex:1}
+.video-info .v-title{
+  font-size:13.5px;font-weight:800;color:var(--txt);line-height:1.4;margin-bottom:3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.video-info .v-sub{font-size:12px;color:var(--txt-3)}
+
+.sub-gate-actions{display:flex;flex-direction:column;gap:12px}
+.btn-youtube{
+  padding:15px 26px;border-radius:16px; font-weight:900;font-size:14.5px;
+  border:1px solid rgba(255,77,77,.5); background:linear-gradient(180deg,#ff4d4d,#cc0000);
+  color:#fff;cursor:pointer; display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 -2px 0 rgba(0,0,0,.2) inset, 0 6px 22px rgba(255,77,77,.35);
+  transition:all .25s var(--ease);
+}
+.btn-youtube:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.btn-youtube:active{transform:translateY(0) scale(.98)}
+.btn-youtube.liked{
+  border-color:rgba(125,249,214,.5); background:linear-gradient(180deg,#22c55e,#15803d);
+  box-shadow:0 6px 22px rgba(34,197,94,.35);
+}
+.btn-confirm{
+  padding:15px 26px;border-radius:16px; font-weight:800;font-size:15px;
+  border:1px solid rgba(125,249,214,.45); background:linear-gradient(180deg,#7df9d6,#22c55e);
+  color:#052e12;cursor:pointer; display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 -2px 0 rgba(0,0,0,.12) inset, 0 6px 20px rgba(125,249,214,.3);
+  transition:all .25s var(--ease);
+}
+.btn-confirm:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}
+.btn-confirm:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
+.btn-confirm-note{font-size:14px;color:var(--txt-2);margin-top:16px;line-height:1.55;font-weight:700;min-height:44px}
+.btn-confirm-note b{color:var(--gold)}
+.warn-note{color:var(--gold)}
+
+.box-hero{
+  margin:0 0 16px;padding:14px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,214,10,.14),rgba(255,214,10,.05));
+  border:2px dashed rgba(255,214,10,.65);
+}
+.box-hero .big{font-size:clamp(16px,4.6vw,19px);font-weight:900;color:var(--gold);line-height:1.35}
+.box-hero .small{font-size:13px;font-weight:700;color:var(--txt-2);margin-top:4px}
+.box-list{
+  text-align:left;border-radius:16px;padding:14px 16px;margin-bottom:16px;
+  background:rgba(0,0,0,.35);border:1px solid var(--bd);
+}
+.box-list-title{font-size:12.5px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:var(--txt-3);margin-bottom:10px}
+.box-row{display:flex;gap:10px;align-items:center;font-size:13.5px;padding:6px 0;border-bottom:1px dashed var(--bd);flex-wrap:wrap}
+.box-row:last-child{border-bottom:none}
+.box-row .lbl{font-weight:800;color:var(--txt);flex:0 0 auto;min-width:88px}
+.box-row .lbl i{width:16px;text-align:center;margin-right:6px}
+.box-row.tg .lbl i{color:var(--tg)}
+.box-row.zalo .lbl i{color:#4fc3f7}
+.box-row a{color:#4fc3f7;font-weight:800;text-decoration:underline;text-decoration-style:dashed;text-underline-offset:3px;word-break:break-all}
+.box-row a:hover{color:var(--gold)}
+.box-row.tg a{color:var(--tg)}
+.btn-skip{
+  width:100%;padding:16px 24px;font-size:16px;font-weight:900;color:#1a1500;
+  background:linear-gradient(180deg,#ffe45c,#ffc400);border:1px solid rgba(255,214,10,.7);
+  box-shadow:0 6px 22px rgba(255,196,0,.35);cursor:pointer;border-radius:16px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:all .25s var(--ease);
+}
+.btn-skip:hover{background:linear-gradient(180deg,#ffe97f,#ffcf2e);transform:translateY(-2px)}
+.btn-skip:active{transform:translateY(0) scale(.98)}
+.copy-note-btn{
+  width:100%;padding:13px 22px;font-size:14px;font-weight:800;color:var(--txt);margin-top:10px;
+  background:var(--glass);border:1px solid var(--bd);border-radius:14px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:all .2s var(--ease);
+}
+.copy-note-btn:hover{background:var(--glass-2);border-color:var(--mint);color:var(--mint)}
+.copy-note-btn.copied{background:rgba(125,249,214,.15);border-color:var(--mint);color:var(--mint)}
+.box-foot{margin-top:12px;font-size:12.5px;color:var(--txt-3);line-height:1.55}
+.box-foot b{color:var(--gold)}
+
+.shake{animation:shake .4s ease-in-out !important}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  75%{transform:translateX(8px)}
+}
+
+@media (max-width:768px){
+  .header{padding:11px 14px} .logo{font-size:17px} .gbtn{font-size:12px;padding:8px 14px}
+  .container{padding:18px 14px 55px} .post-card{padding:20px} .post-card .post-title{font-size:16px}
+  .modal-box{padding:24px 20px} .sub-gate-box{padding:26px 18px}
+  .sub-gate h2{font-size:18px} .step-dot{font-size:11px;padding:6px 10px}
+  .video-thumb{width:96px;height:56px} .video-info .v-title{font-size:12.5px}
+}
+@media (max-width:480px){
+  .header-right .gbtn span{display:none} .header-right .gbtn i{margin:0}
+  .step-dot span{display:none} .step-dot.active span{display:inline}
+  .box-row .lbl{min-width:0}
+}
+.gbtn,.btn-download,.modal-download-btn,.post-card,.modal-box,.btn-youtube,.btn-confirm,.btn-skip,.copy-note-btn{-webkit-tap-highlight-color:transparent}
+img{content-visibility:auto}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== CỔNG CHẶN: 2 BƯỚC ===== -->
+<div class="sub-gate" id="subGate">
+  <div class="sub-gate-box">
+    <div class="step-bar">
+      <div class="step-dot" id="stepDot1"><i class="fa-solid fa-circle-play"></i> <span>Xem & Like</span></div>
+      <div class="step-dot opt" id="stepDot2"><i class="fa-solid fa-unlock"></i> <span>Box</span></div>
+    </div>
+
+    <!-- BƯỚC 1: XEM VIDEO 20 GIÂY + LIKE -->
+    <div class="gate-step active" id="gateStep1">
+      <div class="sub-gate-icon"><i class="fa-brands fa-youtube" style="color:var(--red)"></i></div>
+      <h2>Bước 1/2: Xem, like, sub & comment</h2>
+      <p class="sub-gate-sub">
+        Bấm nút đỏ bên dưới rồi <b>xem hết video</b>, <span class="big-word mint"><i class="fa-solid fa-thumbs-up"></i> LIKE</span> video, <b>sub kênh</b> và <b>comment video</b>.
+      </p>
+      <div class="video-card">
+        <div class="video-thumb">
+          <img id="thumbVideo" alt="Video YouTube" loading="lazy">
+          <div class="play-ic"><i class="fa-brands fa-youtube"></i></div>
+        </div>
+        <div class="video-info">
+          <div class="v-title">Xem hết video, like, sub kênh và comment video này để tiếp tục vào web</div>
+          <div class="v-sub" id="linkVideo"></div>
+        </div>
+      </div>
+      <div class="sub-gate-actions">
+        <a href="#" target="_blank" rel="noopener" class="btn-youtube" id="btnWatch" data-link="watchVideo"><i class="fa-solid fa-thumbs-up"></i> Mở video & Like</a>
+        <button class="btn-confirm" id="btnConfirmWatch" disabled><i class="fa-solid fa-circle-check"></i> Tôi đã xem & Like</button>
+      </div>
+      <div class="btn-confirm-note" id="watchNote"><i class="fa-regular fa-clock"></i> Bấm <b>"Mở video & Like"</b> trước, sau đó quay lại bấm <b>"Tôi đã xem & Like"</b>.</div>
+    </div>
+
+    <!-- BƯỚC 2: BOX TELEGRAM + ZALO (TUỲ CHỌN) -->
+    <div class="gate-step" id="gateStep2">
+      <div class="sub-gate-icon tg"><i class="fa-brands fa-telegram-plane"></i></div>
+      <h2>Vào Box Để Nhận Hack No Vượt Link</h2>
+      <div class="box-hero">
+        <div class="big">Vào box hoặc không đều được</div>
+        <div class="small">Bạn có thể bấm nút vàng bên dưới để vào web ngay.</div>
+      </div>
+      <div class="box-list">
+        <div class="box-list-title"><i class="fa-solid fa-list-check"></i> Danh sách Box</div>
+        <div class="box-row tg"><span class="lbl"><i class="fa-brands fa-telegram-plane"></i>Telegram:</span><a href="#" data-link="telegram" data-show-url target="_blank" rel="noopener noreferrer"></a></div>
+        <div class="box-row zalo"><span class="lbl"><i class="fa-solid fa-comment-dots"></i>Zalo 1:</span><a href="#" data-link="zalo1" data-show-url target="_blank" rel="noopener noreferrer"></a></div>
+        <div class="box-row zalo"><span class="lbl"><i class="fa-solid fa-comment-dots"></i>Zalo 2:</span><a href="#" data-link="zalo2" data-show-url target="_blank" rel="noopener noreferrer"></a></div>
+        <div class="box-row zalo"><span class="lbl"><i class="fa-solid fa-comment-dots"></i>Zalo 3:</span><a href="#" data-link="zalo3" data-show-url target="_blank" rel="noopener noreferrer"></a></div>
+      </div>
+      <div class="sub-gate-actions">
+        <button class="btn-skip" id="btnSkipBox" type="button"><i class="fa-solid fa-forward"></i> Bỏ qua, vào web luôn</button>
+        <button class="copy-note-btn" id="btnCopyNote" type="button"><i class="fa-regular fa-copy"></i> Copy danh sách link</button>
+      </div>
+      <div class="box-foot">Vào box xong quay lại đây, bấm <b>"Bỏ qua, vào web luôn"</b> để tiếp tục.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><i class="fa-solid fa-bolt"></i>Download<span>Hub</span></div>
+  </div>
+  <div class="header-right">
+    <a href="#" data-link="headerYoutube" target="_blank" rel="noopener" class="gbtn btn-social youtube"><i class="fa-brands fa-youtube"></i> <span>YouTube</span></a>
+    <a href="#" data-link="telegram" target="_blank" rel="noopener" class="gbtn btn-social telegram"><i class="fa-brands fa-telegram-plane"></i> <span>Telegram</span></a>
+    <a href="#" data-link="headerTiktok" target="_blank" rel="noopener" class="gbtn btn-social tiktok"><i class="fa-brands fa-tiktok"></i> <span>TikTok</span></a>
+    <a href="#" data-link="zalo3" target="_blank" rel="noopener" class="gbtn btn-social zalo"><i class="fa-solid fa-comment-dots"></i> <span>Zalo 1</span></a>
+    <a href="#" data-link="zalo2" target="_blank" rel="noopener" class="gbtn btn-social zalo"><i class="fa-solid fa-comment-dots"></i> <span>Zalo 2</span></a>
+    <a href="#" data-link="bypass" target="_blank" rel="noopener" class="gbtn btn-bypass"><i class="fa-solid fa-rocket"></i> <span>Bypass Key</span></a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="guide-line"><i class="fa-regular fa-circle-question" style="margin-right:6px"></i> Ấn vào <strong>"Tải xuống"</strong> để xem các link tải.</div>
+  <div id="postsContainer"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i> Đang tải dữ liệu...</div></div>
+</div>
+
+<!-- MODAL XEM LINK -->
+<div id="downloadModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+    <h3 id="modalTitle" class="modal-title">Tiêu đề bài viết</h3>
+    <div id="modalContent" class="modal-content">Nội dung các link sẽ hiện ra ở đây...</div>
+    <div class="modal-actions">
+      <button id="copyContentBtn" class="copy-btn"><i class="fa-regular fa-copy"></i> Copy nội dung</button>
+      <a id="modalDownloadBtn" href="#" target="_blank" rel="noopener" class="modal-download-btn" style="display:none"><i class="fa-solid fa-download"></i> Tải xuống ngay</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====== CẤU HÌNH API JSONBIN ====== */
+const BIN_URL = "https://api.jsonbin.io/v3/b/6aed7068ac6210605a71525d";
+
+/* ====== THỜI GIAN ====== */
+const WATCH_SECONDS = 20;               // số giây xem + like
+const WATCH_MS = WATCH_SECONDS * 1000;
+const GATE_TTL_MS = 10 * 60 * 1000;     // nhớ đã qua cổng trong 10 phút
+
+/* =====================================================================
+   TẤT CẢ LINK NẰM Ở ĐÂY — sửa link chỉ cần sửa trong khối này
+   ===================================================================== */
+const LINKS = {
+  // Bước 1: video cần xem + like
+  watchVideo: "https://youtu.be/eudEsisDXcg?si=WgYlSiHKwFxIfuY-",
+
+  // Bước 2: box Telegram / Zalo
+  telegram:   "https://t.me/SIKEMODFF",
+  zalo1:      "https://zalo.me/g/0hbi6p2gplz0idb9sfnz",
+  zalo2:      "https://zalo.me/g/inj3bicbrjuz53itudvj",
+  zalo3:      "https://zalo.me/g/2xqvud1opgic0gy0tc9r",
+
+  // Header
+  headerYoutube: "https://www.youtube.com/@SIKEREAL",
+  headerTiktok:  "https://tiktok.com/@sikeffmod",
+  bypass:        "https://tvinh19122012-boop.github.io/BYPASS-WEB"
+};
+/* ===================================================================== */
+
+// Gắn link vào mọi phần tử có data-link
+document.querySelectorAll("[data-link]").forEach(a => {
+  const url = LINKS[a.dataset.link];
+  if(!url) return;
+  a.href = url;
+  if(a.hasAttribute("data-show-url")) a.textContent = url;
+});
+
+const $ = id => document.getElementById(id);
+const postsContainer = $("postsContainer"), modalOverlay = $("downloadModal"), modalTitle = $("modalTitle"),
+      modalContent = $("modalContent"), modalDownloadBtn = $("modalDownloadBtn");
+
+const subGate = $("subGate");
+const stepDots = [$("stepDot1"), $("stepDot2")];
+const gateSteps = [$("gateStep1"), $("gateStep2")];
+const watchBtn = $("btnWatch"), watchConfirm = $("btnConfirmWatch"), watchNote = $("watchNote");
+
+// Thumbnail video
+const VIDEO_ID = LINKS.watchVideo.split("/").pop();
+$("thumbVideo").src = "https://i.ytimg.com/vi/" + VIDEO_ID + "/hqdefault.jpg";
+$("linkVideo").textContent = "youtu.be/" + VIDEO_ID;
+
+const KEY = { watch: "watchPass_v6", tele: "teleJoined_v6" };
+
+/* ----- Nhớ trạng thái đã qua cổng (localStorage, có hạn 15 phút) ----- */
+const gateMem = {};
+function gateGet(key){
+  let exp = gateMem[key] || 0;
+  try{ exp = Math.max(exp, parseInt(localStorage.getItem(key), 10) || 0); }catch(e){}
+  return exp > Date.now();
+}
+function gateSet(key){
+  const exp = Date.now() + GATE_TTL_MS;
+  gateMem[key] = exp;
+  try{ localStorage.setItem(key, String(exp)); }catch(e){}
+}
+
+/* ----- Đồng hồ 20 giây: bắt đầu khi bấm nút, đếm cả trong lẫn ngoài web.
+         Đóng tab / thoát trình duyệt thì mất tiến độ, không lưu lại.
+         Bấm lại hoặc bấm xác nhận sớm không reset thời gian. ----- */
+let watchStarted = false;
+let watchStartAt = 0;
+
+function watchElapsed(){
+  return watchStarted ? Date.now() - watchStartAt : 0;
+}
+function watchLeftMs(){
+  return Math.max(0, WATCH_MS - watchElapsed());
+}
+function startWatch(){
+  if(watchStarted) return;
+  watchStarted = true;
+  watchStartAt = Date.now();
+}
+function stopWatch(){
+  watchStarted = false;
+  watchStartAt = 0;
+}
+
+/* ----- Thông báo ----- */
+let msgHoldUntil = 0;
+function warn(html){
+  msgHoldUntil = Date.now() + 2500;
+  watchNote.innerHTML = '<i class="fa-solid fa-triangle-exclamation warn-note"></i> ' + html;
+  watchNote.classList.add("shake");
+  setTimeout(() => watchNote.classList.remove("shake"), 400);
+  if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+}
+function ok(html){
+  watchNote.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--mint)"></i> ' + html;
+}
+
+/* ----- Cập nhật giao diện bước 1 (đếm ngược) ----- */
+function updateWatchUI(){
+  if(!gateSteps[0].classList.contains("active")) return;
+  if(Date.now() < msgHoldUntil) return;
+
+  if(!watchStarted){
+    watchConfirm.disabled = true;
+    return;
+  }
+  watchConfirm.disabled = false;
+  watchBtn.classList.add("liked");
+  ok('Hãy ở lại xem, like, sub và comment video. Xong thì quay lại bấm <b>"Tôi đã xem & Like"</b>.');
+}
+setInterval(updateWatchUI, 250);
+
+/* ----- Bấm nút mở video: bắt đầu đếm 20 giây ----- */
+watchBtn.addEventListener("click", () => {
+  startWatch();
+  watchBtn.classList.add("liked");
+  updateWatchUI();
+});
+
+/* ----- Bấm xác nhận ----- */
+watchConfirm.addEventListener("click", () => {
+  if(!watchStarted){
+    warn('Bạn cần bấm <b>"Mở video & Like"</b> trước!');
+    return;
+  }
+  if(watchLeftMs() > 0){
+    warn('chưa xem hết video, hãy ở lại xem hết video rồi bấm lại nhé.');
+    return;
+  }
+  stopWatch();
+  gateSet(KEY.watch);
+  goToStep(2);
+});
+
+/* ----- Điều hướng giữa các bước ----- */
+function showStep(n){
+  gateSteps.forEach((el, i) => el.classList.toggle("active", i === n - 1));
+}
+function setDots(current){
+  stepDots.forEach((dot, i) => {
+    const n = i + 1;
+    dot.classList.remove("active", "done");
+    if(n < current) dot.classList.add("done");
+    else if(n === current) dot.classList.add("active");
+  });
+}
+function goToStep(n){
+  showStep(n);
+  setDots(n);
+}
+
+/* ----- Kiểm tra khi tải trang ----- */
+function gateCheck(){
+  const watchDone = gateGet(KEY.watch);
+  if(watchDone && gateGet(KEY.tele)){
+    subGate.classList.remove("active");
+    document.body.style.overflow = "";
+    return;
+  }
+  subGate.classList.add("active");
+  document.body.style.overflow = "hidden";
+  goToStep(watchDone ? 2 : 1);
+}
+
+/* ----- Bước 2: bỏ qua box ----- */
+$("btnSkipBox").addEventListener("click", () => {
+  gateSet(KEY.tele);
+  stepDots[1].classList.add("done");
+  stepDots[1].classList.remove("active");
+  subGate.classList.remove("active");
+  document.body.style.overflow = "";
+});
+
+/* ===== Sao chép danh sách box ===== */
+function copyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      return navigator.clipboard.writeText(text).then(() => true, () => fallbackCopy(text));
+    }
+  }catch(e){}
+  return Promise.resolve(fallbackCopy(text));
+}
+function fallbackCopy(text){
+  try{
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.top = "-9999px"; ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+const btnCopyNote = $("btnCopyNote");
+btnCopyNote.addEventListener("click", async () => {
+  const text = [
+    "Vào Box Để Nhận Hack No Vượt Link",
+    "Telegram: " + LINKS.telegram,
+    "Zalo 1: " + LINKS.zalo1,
+    "Zalo 2: " + LINKS.zalo2,
+    "Zalo 3: " + LINKS.zalo3
+  ].join("\n");
+  const success = await copyText(text);
+  const original = btnCopyNote.innerHTML;
+  if(success){
+    btnCopyNote.classList.add("copied");
+    btnCopyNote.innerHTML = '<i class="fa-solid fa-check"></i> Đã copy danh sách link!';
+  } else {
+    btnCopyNote.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Không copy được, hãy bôi đen link';
+  }
+  setTimeout(() => {
+    btnCopyNote.classList.remove("copied");
+    btnCopyNote.innerHTML = original;
+  }, 2000);
+});
+
+/* ===== Dữ liệu bài đăng (JSONBin) ===== */
+let posts = [];
+
+async function fetchPosts(){
+  try{
+    const res = await fetch(BIN_URL, { headers: { "X-Bin-Meta": "false" }, cache: "no-store" });
+    if(!res.ok) throw new Error("Server trả mã " + res.status);
+    const data = await res.json();
+    if(Array.isArray(data)) posts = data;
+    else if(data && Array.isArray(data.posts)) posts = data.posts;
+    else posts = [];
+    renderPosts();
+  }catch(e){
+    console.error("fetchPosts lỗi:", e);
+    postsContainer.innerHTML = `<div class="empty-state"><i class="fa-regular fa-database"></i><h3>Không thể tải dữ liệu</h3><p style="color:var(--txt-3);font-size:14px">${escapeHtml(e.message)}. Thử reload lại trang.</p></div>`;
+  }
+}
+
+function escapeHtml(str){
+  if(str === null || str === undefined) return "";
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function formatDesc(text){
+  if(!text) return "";
+  const escaped = escapeHtml(text).replace(/\n/g, "<br>");
+  return escaped.replace(/(https?:\/\/[^\s<>"']+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+}
+
+function renderPosts(){
+  if(!posts || posts.length === 0){
+    postsContainer.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><h3>Chưa có bài viết</h3><p style="color:var(--txt-3);font-size:14px">Hiện chưa có nội dung nào được đăng.</p></div>`;
+    return;
+  }
+  postsContainer.innerHTML = `<div class="posts-grid">${posts.map(p => `
+    <div class="post-card glass">
+      <div class="post-title">${escapeHtml(p.title)}<span class="post-id">#${p.id.toString().slice(-6)}</span></div>
+      ${p.image ? `<img src="${escapeHtml(p.image)}" class="post-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ""}
+      <div class="post-desc">${formatDesc(p.desc)}</div>
+      <div class="post-meta"><button class="btn-download" onclick="openDownloadModal(${p.id})"><i class="fa-solid fa-download"></i> Tải xuống</button></div>
+    </div>`).join("")}</div>`;
+}
+
+/* ===== Modal ===== */
+function openDownloadModal(id){
+  const p = posts.find(item => item.id == id);
+  if(!p) return;
+  modalTitle.textContent = p.title;
+  modalContent.innerHTML = formatDesc(p.desc);
+  if(p.redirectLink && p.redirectLink.trim() !== ""){
+    modalDownloadBtn.style.display = "inline-flex";
+    modalDownloadBtn.href = p.redirectLink;
+  } else {
+    modalDownloadBtn.style.display = "none";
+  }
+  modalOverlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+function closeModal(){
+  modalOverlay.classList.remove("active");
+  document.body.style.overflow = "";
+}
+function closeModalOnOutside(e){ if(e.target === modalOverlay) closeModal(); }
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && modalOverlay.classList.contains("active")) closeModal();
+});
+
+/* ===== Sao chép nội dung modal ===== */
+const copyContentBtn = $("copyContentBtn");
+copyContentBtn.addEventListener("click", async () => {
+  const text = modalContent.innerText || modalContent.textContent || "";
+  const done = () => {
+    copyContentBtn.classList.add("copied");
+    copyContentBtn.innerHTML = '<i class="fa-solid fa-check"></i> Đã copy!';
+    setTimeout(() => {
+      copyContentBtn.classList.remove("copied");
+      copyContentBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy nội dung';
+    }, 1800);
+  };
+  const success = await copyText(text);
+  if(success) done();
+  else alert("Không thể copy tự động. Hãy bôi đen và copy thủ công.");
+});
+modalContent.addEventListener("dblclick", () => {
+  const range = document.createRange(); range.selectNodeContents(modalContent);
+  const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+});
+
+/* ===== Khởi động ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  gateCheck();
+  fetchPosts();
+  document.querySelector(".modal-close").addEventListener("click", closeModal);
+  modalOverlay.addEventListener("click", closeModalOnOutside);
+});
+</script>
+</body>
+</html>
